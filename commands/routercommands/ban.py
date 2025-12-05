@@ -3,7 +3,7 @@ from telegram.ext import ContextTypes
 from dbmanagers.user import add_ban,remove_ban,get_bans
 from Logger import send_info
 
-async def ban_(update:Update,context:ContextTypes.DEFAULT_TYPE):
+async def ban_(update:Update,context:ContextTypes.DEFAULT_TYPE,args):
     
     reply = update.effective_message.reply_to_message
     
@@ -25,7 +25,7 @@ async def ban_(update:Update,context:ContextTypes.DEFAULT_TYPE):
     await update.effective_message.reply_text(tt)
     await send_info(update,context,user_id,tt+f"\nFrom Group {chat.id}")
 
-async def unban_(update:Update,context:ContextTypes.DEFAULT_TYPE):
+async def unban_(update:Update,context:ContextTypes.DEFAULT_TYPE,args):
     
     reply = update.effective_message.reply_to_message
     

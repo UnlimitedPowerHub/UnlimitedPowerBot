@@ -3,7 +3,7 @@ from telegram.ext import ContextTypes
 from Logger import send_notice,send_info
 from dbmanagers.user import is_mute,mute,unmute,get_mutes
 
-async def mute_(update:Update,context:ContextTypes.DEFAULT_TYPE):
+async def mute_(update:Update,context:ContextTypes.DEFAULT_TYPE,args):
     
     reply = update.effective_message.reply_to_message
     user_id = update.effective_user.id
@@ -28,7 +28,7 @@ async def mute_(update:Update,context:ContextTypes.DEFAULT_TYPE):
     await update.effective_message.reply_text(asndioha)
     await send_info(update,context,user_id,asndioha)
 
-async def unmute_(update:Update,context:ContextTypes.DEFAULT_TYPE):
+async def unmute_(update:Update,context:ContextTypes.DEFAULT_TYPE,args):
     
     reply = update.effective_message.reply_to_message
     user_id = update.effective_user.id
@@ -53,7 +53,7 @@ async def unmute_(update:Update,context:ContextTypes.DEFAULT_TYPE):
     await update.effective_message.reply_text(asndioha)
     await send_info(update,context,user_id,asndioha)
     
-async def mute_list_bot(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def mute_list_bot(update: Update, context: ContextTypes.DEFAULT_TYPE,args):
 
     bans = get_mutes()
 
