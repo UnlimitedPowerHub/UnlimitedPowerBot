@@ -47,7 +47,7 @@ async def unban_(update:Update,context:ContextTypes.DEFAULT_TYPE,args):
     await update.effective_message.reply_text(tt)
     await send_info(update,context,user_id,tt+f"\nFrom Group {chat.id}")
            
-async def ban_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def ban_list(update: Update, context: ContextTypes.DEFAULT_TYPE,args):
 
     bans = get_bans()
 
