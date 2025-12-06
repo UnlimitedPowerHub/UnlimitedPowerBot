@@ -2,8 +2,15 @@ from telegram import Update
 from telegram.ext import ContextTypes
 from dbmanagers.user import add_ban,remove_ban,get_bans
 from Logger import send_info
+from func import is_owner_or_admin
+
 
 async def ban_(update:Update,context:ContextTypes.DEFAULT_TYPE,args):
+    
+    user_id = update.effective_user.id
+    
+    if not is_owner_or_admin(user_id):
+        return
     
     reply = update.effective_message.reply_to_message
     
@@ -11,7 +18,7 @@ async def ban_(update:Update,context:ContextTypes.DEFAULT_TYPE,args):
         await update.effective_message.reply_text("Please Reply To An User.")
         return
     
-    user_id = update.effective_user.id
+    
     
     target = reply.from_user
     
@@ -26,14 +33,16 @@ async def ban_(update:Update,context:ContextTypes.DEFAULT_TYPE,args):
     await send_info(update,context,user_id,tt+f"\nFrom Group {chat.id}")
 
 async def unban_(update:Update,context:ContextTypes.DEFAULT_TYPE,args):
+    user_id = update.effective_user.id
     
+    if not is_owner_or_admin(user_id):
+        return
     reply = update.effective_message.reply_to_message
     
     if not reply:
         await update.effective_message.reply_text("Please Reply To An User.")
         return
     
-    user_id = update.effective_user.id
     
     target = reply.from_user
     
@@ -48,6 +57,11 @@ async def unban_(update:Update,context:ContextTypes.DEFAULT_TYPE,args):
     await send_info(update,context,user_id,tt+f"\nFrom Group {chat.id}")
            
 async def ban_list(update: Update, context: ContextTypes.DEFAULT_TYPE,args):
+    
+    user_id = update.effective_user.id
+    
+    if not is_owner_or_admin(user_id):
+        return
 
     bans = get_bans()
 

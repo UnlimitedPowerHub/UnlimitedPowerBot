@@ -1,13 +1,20 @@
 from dbmanagers.staff import add_admin, remove_admin, admin
 from Logger import send_notice,send_info,send_error
+from func import is_owner
 
 async def add_admin_(update, context, args):
     try:
         reply = update.effective_message.reply_to_message
         user_id = update.effective_user.id
+        fff="Tried To Use staff.add.admin Command"
+        
+        if not is_owner(user_id):
+            await send_notice(update,context,user_id,fff)
+            return
+        
         if not reply:
             await update.effective_message.reply_text("Please Reply To An User")
-            await send_notice(update,context,user_id,"Tried To Use staff.add.admin Command")
+            await send_notice(update,context,user_id,fff)
             return
         target_id = reply.from_user.id
         
@@ -30,9 +37,14 @@ async def remove_admin_(update, context, args):
     try:
         reply = update.effective_message.reply_to_message
         user_id = update.effective_user.id
+        fff="Tried To Use staff.remove.admin Command"
+        if not is_owner(user_id):
+            await send_notice(update,context,user_id,fff)
+            return
+        
         if not reply:
             await update.effective_message.reply_text("Please Reply To An User")
-            await send_notice(update,context,user_id,"Tried To Use staff.remove.admin Command")
+            await send_notice(update,context,user_id,fff)
             return
         target_id = reply.from_user.id
         

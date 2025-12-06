@@ -10,6 +10,7 @@ class CommandRouter:
         self.routes[path] = func
 
     async def handle(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        
         if not update.message:
             return
         text = update.message.text.strip()

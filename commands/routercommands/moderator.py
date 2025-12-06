@@ -1,13 +1,21 @@
 from dbmanagers.staff import add_moderator, remove_moderator, moderator
 from Logger import send_notice,send_error,send_info
+from func import is_owner
 
 async def add_moderator_(update, context, args):
     try:
         reply = update.effective_message.reply_to_message
         user_id = update.effective_user.id
+        
+        fff="Tried To Use staff.add.moderator Command"
+        
+        if not is_owner(user_id):
+            await send_notice(update,context,user_id,fff)
+            return
+        
         if not reply:
             await update.effective_message.reply_text("Please Reply To An User")
-            await send_notice(update,context,user_id,"Tried To Use staff.add.moderator Command")
+            await send_notice(update,context,user_id,fff)
             return
         target_id = reply.from_user.id
         
@@ -30,9 +38,16 @@ async def remove_moderator_(update, context, args):
     try:
         reply = update.effective_message.reply_to_message
         user_id = update.effective_user.id
+        
+        fff="Tried To Use staff.remove.moderator Command"
+        
+        if not is_owner(user_id):
+            await send_notice(update,context,user_id,fff)
+            return
+        
         if not reply:
             await update.effective_message.reply_text("Please Reply To An User")
-            await send_notice(update,context,user_id,"Tried To Use staff.remove.moderator Command")
+            await send_notice(update,context,user_id,fff)
             return
         target_id = reply.from_user.id
         

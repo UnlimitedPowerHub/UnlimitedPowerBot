@@ -1,9 +1,12 @@
 import traceback
-from config import TARGET_GROUP_ID, SOURCE_CHANNEL_ID
+from config import TARGET_GROUP_ID, SOURCE_CHANNEL_ID,LINK_REGEX
 from commands.commands import router
 from dbmanagers.noticechannel import set_message_map, get_group_message_id
-from Logger import send_error,send_info,send_notice
+from Logger import send_error,send_info,send_notice,send_warn
 from telegram.ext import filters
+from dbmanagers.user import get_users,add_user,remove_user
+
+import re
 
 async def message_handler(update, context):
     try:
@@ -73,3 +76,115 @@ async def handle_edited_post(update, context):
         
     except Exception as e:
         await send_error(update,context,"Bot",f"Error re-forwarding: {e}")
+
+
+async def anti_link(update, context):
+    message = update.message
+    if not message or not message.text:
+        return
+
+    text = message.text
+
+    matches = re.findall(LINK_REGEX, text)
+    found_usernames = []
+
+    for link_user, at_user in matches:
+        if link_user:
+            found_usernames.append(link_user)
+        if at_user:
+            found_usernames.append(at_user)
+
+    if not found_usernames:
+        return
+
+    chat = message.chat
+
+    for username in found_usernames:
+        if username in get_users():
+            continue
+
+        try:
+            member = await chat.get_member(username)
+            if member:
+                add_user(username)
+                continue
+        except:
+            pass
+
+        try:
+            await message.delete()
+        except:
+            pass
+
+        try:
+            
+            await send_warn(
+                update,
+                context,
+                update.effective_user.id,
+                f"Heyyyyy!!! <b>{message.from_user.mention_html()}</b>\n"
+                f"Links are forbidden here!\n"
+                f"Please don’t summon forbidden portals again"
+            )
+            
+            await message.reply_html(
+                f"Heyyyyy!!! <b>{message.from_user.mention_html()}</b>\n"
+                f"Links are forbidden here!\n"
+                f"Please don’t summon forbidden portals again"
+            )
+        except:
+            pass
+
+        return
+
+
+async def join_handler(update, context):
+    message = update.message
+    if message is None:
+        return
+
+    try:
+        await message.delete()
+    except:
+        pass
+
+    for member in message.new_chat_members:
+        username = member.username
+
+        if username:
+            add_user(username)
+
+        await send_notice(update, context, update.effective_user.id, f"New User {username}!")
+
+        await message.chat.send_message(
+            f"🎉 <b>Welcome {member.mention_html()}!</b>\n"
+            "You have entered the battlefield\n"
+            "May your stay be legendary!",
+            parse_mode="HTML"
+        )
+
+async def left_handler(update, context):
+    message = update.message
+    if message is None or message.left_chat_member is None:
+        return
+
+    try:
+        await message.delete()
+    except:
+        pass
+
+    member = message.left_chat_member
+    username = member.username
+
+    if username:
+        remove_user(username)
+
+    await send_notice(update, context, update.effective_user.id, f"User {username} Left!")
+
+    await message.chat.send_message(
+        f"💀 <b>{member.full_name}</b> is officially dead…\n"
+        "They have left the arena. Rest in peace 🕊️",
+        parse_mode="HTML"
+    )
+
+

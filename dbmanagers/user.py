@@ -2,6 +2,15 @@ from database import DataBase
 
 user=DataBase('user.json')
 
+def add_user(username_or_userid):
+    user.set_path(["users"],username_or_userid)
+
+def remove_user(username_or_userid):
+    user.remove_path(["users"],username_or_userid)
+    
+def get_users():
+    return user.all()['users'] if not {} else {}
+
 def add_ban(user_id):
     user.set_path(["bans"],user_id)
     
