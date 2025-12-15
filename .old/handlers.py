@@ -68,9 +68,9 @@ async def handle_edited_post(update, context):
             )
             await send_notice(update,context,"Bot","Deleted Old Message From Main Group")
         except Exception as e:
-            await send_error(update,context,"Bot",f"Could not delete old message from main group: {e}")
+            await send_error(update,context,"Bot",f"Could not delete .old message from main group: {e}")
     else:
-        await send_notice(update,context,"Bot", "No old mapping found. It might be a new edit for an unmapped post.")
+        await send_notice(update,context,"Bot", "No .old mapping found. It might be a new edit for an unmapped post.")
     
     try:
         new_forwarded_msg = await context.bot.forward_message(
