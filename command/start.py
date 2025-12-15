@@ -1,9 +1,11 @@
 import time
+import datetime as dt
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 
 from db.user import *
+from bot_config import bot_run_time
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -12,6 +14,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if not exist_user(userid):
         add_user(userid, {})
+
+    current_time = dt.datetime.now(dt.timezone.utc)
+
+    uptime = await format_uptime(bot_run_time, current_time)
 
     start_time = time.time()
 
@@ -30,7 +36,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Tʜɪs ʙᴏᴛ ᴍᴀᴅᴇ ғᴏʀ UɴʟɪᴍɪᴛᴇᴅPᴏᴡᴇʀ ᴄᴏᴍᴍᴜɴɪᴛʏ.\n"
         "ᴏᴡɴᴇʀ ᴀɴᴅ ᴅᴇᴠᴇʟᴏᴘᴇʀ ɪs ᴀᴍɪʀʀᴇᴢᴀ(@ManamMadara).\n"
         "——————————‹ ⁌※⁍ ›——————————\n"
-        f"ᴜᴘᴛɪᴍᴇ: None\n"
+        f"ᴜᴘᴛɪᴍᴇ: {uptime}\n"
         f"ᴘɪɴɢ: {ping: .2f}ᴍs",
         reply_markup=InlineKeyboardMarkup([
             [InlineKeyboardButton("➕ Aᴅᴅ Mᴇ ➕", url=f"https://t.me/{context.bot.username}?startgroup=true")],
@@ -42,3 +48,20 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]),
         parse_mode='HTML'
     )
+
+
+async def format_uptime(start, end):
+    delta_uptime = end - start
+
+    hours, remainder = divmod(int(delta_uptime.total_seconds()), 3600)
+    minutes, seconds = divmod(remainder, 60)
+    days, hours = divmod(hours, 24)
+
+    if days > 0:
+        return f"{days}d {hours}h {minutes}m {seconds}s"
+    if hours > 0:
+        return f"{hours}h {minutes}m {seconds}s"
+    elif minutes > 0:
+        return f"{minutes}m {seconds}s"
+    else:
+        return f"{seconds}s"

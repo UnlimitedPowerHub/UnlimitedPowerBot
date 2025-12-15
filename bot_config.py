@@ -1,4 +1,4 @@
 import datetime as dt
 
 TOKEN = ""
-bot_run_time = dt.now()
+bot_run_time = dt.datetime.now(dt.timezone.utc)
