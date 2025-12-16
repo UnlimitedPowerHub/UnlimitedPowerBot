@@ -1,1 +1,0 @@
-# AniWifeProtect-Bot
