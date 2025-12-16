@@ -3,7 +3,8 @@ from telegram.ext import Application
 
 commands = {
     'start': 'start bot',
-    'help': 'get help message'
+    'help': 'get help message',
+    'broadcast': 'broadcast a message'
 }
 
 

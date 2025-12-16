@@ -1,6 +1,11 @@
 from db.db import DB
+from bot_config import OWNER_ID
 
 users = DB('users')
+
+
+def is_owner(userid):
+    return bool(str(userid) == str(OWNER_ID))
 
 
 def get_users():

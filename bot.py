@@ -4,6 +4,7 @@ from bot_config import TOKEN
 from command.start import start
 from command.help import help
 from command.command import set_my_commands
+from command.broadcast import broadcast
 
 
 def main():
@@ -12,6 +13,7 @@ def main():
 
     bot.add_handler(CommandHandler("start", start))
     bot.add_handler(CommandHandler("help", help))
+    bot.add_handler(CommandHandler("broadcast", broadcast))
 
     bot.add_handler(CallbackQueryHandler(help, "^help_btn$"))
 
